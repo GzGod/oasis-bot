@@ -1,76 +1,76 @@
-# OASIS AI BETA CLI VERSION
+# OASIS AI BETA CLI 版本
 
 ![banner](image-1.png)
-AI inference powered by distributed compute
+由分布式计算提供支持的AI推理
 
-# Features
+# 特性
 
 ![Banner](image.png)
 
-- **Register/Login Accounts**
+- **注册/登录账户**
 
-- **Auto Create Providers**
+- **自动创建提供者**
 
-- **Auto Send Heartbeat**
+- **自动发送心跳**
 
-- **Support Multy Accounts**
+- **支持多个账户**
 
-- **Support Proxy**
+- **支持代理**
 
-## Requirements
+## 要求
 
-- **Node.js**: Ensure you have Node.js installed.
+- **Node.js**: 请确保已安装 Node.js。
 
-- **NPM**: Ensure you have npm installed.
+- **NPM**: 请确保已安装 npm。
 
-put your proxy in file `proxy.txt` format `http://username:pass@ip:port` 1 proxy for 1 provider
+将你的代理放在文件 `proxy.txt` 中，格式为 `http://username:pass@ip:port`，每个提供者一个代理。
 
-so if you want create multiple providers you need to put multiple proxy there.
+所以如果你想创建多个提供者，你需要在文件中放置多个代理。
 
-## Setup
+## 设置
 
-1. Clone this repository:
+1. 克隆此仓库：
 
    ```bash
    git clone https://github.com/Zlkcyber/oasis-bot.git
    cd oasis-bot
    ```
 
-2. Install dependencies:
+2. 安装依赖：
 
    ```bash
    npm install
    ```
 
-3. put your email and pass to `accounts.txt` format `email|password` 1 account for 1 line
+3. 将你的邮箱和密码放入 `accounts.txt` 文件中，格式为 `email|password`，每行一个账户
 
    ```bash
    nano accounts.txt
    ```
 
-4. put your proxy to `proxy.txt`
+4. 将你的代理放入 `proxy.txt` 文件中
 
    ```bash
    nano proxy.txt
    ```
 
-5. Setup to create accounts/login and get Tokens:
+5. 设置以创建账户/登录并获取令牌：
 
    ```bash
    npm run setup
    ```
 
-6. Run The Script:
+6. 运行脚本：
 
    ```bash
    npm run start
    ```
 
-7. Additional feature auto refferal
+7. 额外功能：自动推荐
    ```bash
    npm run autoreff
    ```
 
 ## ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-This project is licensed under the [MIT License](LICENSE).
+此项目采用 [MIT License](LICENSE) 许可。
