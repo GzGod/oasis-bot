@@ -32,7 +32,7 @@
 1. 克隆此仓库：
 
    ```bash
-   git clone https://github.com/Zlkcyber/oasis-bot.git
+   git clone https://github.com/Gzgod/oasis-bot.git
    cd oasis-bot
    ```
 
