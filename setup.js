@@ -16,30 +16,31 @@ function askQuestion(query) {
 
 async function setup() {
   showBanner();
-  // Ask for number of providers to create
-  const input = await askQuestion('Enter the number of Providers you want to create [1-100]: ');
+  // 询问创建供应商的数量
+  const input = await askQuestion('请输入您想要创建的供应商数量 [1-100]: ');
   const numProv = parseInt(input, 10);
   
   if (isNaN(numProv) || numProv < 1 || numProv > 100) {
-    logger("Invalid input. Please enter a number between 1 and 100.", "", "error");
+    logger("输入无效。请输入1到100之间的数字。", "", "error");
     rl.close();
     return;
-  };
+  }
+  
   const proxies = await readToken("proxy.txt");
   const isLogin = await loginFromFile('accounts.txt');
 
   if (proxies.length === 0) { 
-    logger('No proxies found in proxy.txt Exiting...', "", "error");
+    logger('在proxy.txt中未找到任何代理。程序退出...', "", "error");
     rl.close();
     return; 
   }
   if (!isLogin) {
-    logger("No accounts were successfully logged in. Exiting...", "", "error");
+    logger("没有账户成功登录。程序退出...", "", "error");
     rl.close();
     return; 
   }
 
-  logger(`Creating ${numProv} Providers...`);
+  logger(`正在创建 ${numProv} 个供应商...`);
   await createProviders(numProv);
   
   rl.close();
