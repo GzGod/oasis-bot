@@ -7,14 +7,14 @@ import { logger } from "./logger.js";
 export async function createConnection(token, proxy = null) {
     const wsOptions = {};
     if (proxy) {
-        logger(`Connect Using proxy: ${proxy}`);
+        logger(`使用代理连接: ${proxy}`);
         wsOptions.agent = new HttpsProxyAgent(proxy);
     }
 
     const socket = new WebSocket(`wss://ws.oasis.ai/?token=${token}`, wsOptions);
 
     socket.on("open", async () => {
-        logger(`WebSocket connection established for providers: ${token}`, "", "success");
+        logger(`WebSocket 连接已建立供应商: ${token}`, "", "success");
         const randomId = generateRandomId();
         const systemData = generateRandomSystemData();
 
@@ -55,28 +55,28 @@ export async function createConnection(token, proxy = null) {
             const parsedMessage = JSON.parse(message);
             if (parsedMessage.type === "serverMetrics") {
                 const { totalEarnings, totalUptime, creditsEarned } = parsedMessage.data;
-                logger(`Heartbeat sent for provider: ${token}`);
-                logger(`Total uptime: ${totalUptime} seconds | Credits earned:`, creditsEarned);
+                logger(`心跳已发送供应商: ${token}`);
+                logger(`总运行时间: ${totalUptime} 秒 | 赚取的积分:`, creditsEarned);
             } else if (parsedMessage.type === "acknowledged") {
-                logger("System Updated:", message, "warn");
+                logger("系统更新:", message, "warn");
             } else if (parsedMessage.type === "error" && parsedMessage.data.code === "Invalid body") {
                 const systemData = generateRandomSystemData();
                 socket.send(JSON.stringify(systemData));
             }
         } catch (error) {
-            logger("Error parsing message:", "error");
+            logger("解析消息时出错:", "error");
         }
     });
 
     socket.on("close", () => {
-        logger("WebSocket connection closed for token:", token, "warn");
+        logger("WebSocket 连接关闭, 令牌:", token, "warn");
         setTimeout(() => {
-            logger("Attempting to reconnect for token:", token, "warn");
+            logger("尝试重新连接, 令牌:", token, "warn");
             createConnection(token, proxy); 
         }, 5000);
     });
 
     socket.on("error", (error) => {
-        logger("WebSocket error for token:", token, "error");
+        logger("WebSocket 错误, 令牌:", token, "error");
     });
 }
