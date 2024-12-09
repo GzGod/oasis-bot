@@ -11,7 +11,7 @@ export function readToken(filePath) {
             if (tokens.length > 0) {
                 resolve(tokens);  
             } else {
-                reject('No tokens found');
+                reject('未找到任何令牌');
             }
         });
     });
@@ -39,22 +39,24 @@ export function readAccounts(filePath) {
                 .filter(account => account !== null); 
             
             if (accounts.length === 0) {
-                console.warn("No valid accounts found in the file.");
+                console.warn("在文件中未找到有效的账户。");
             }
 
             resolve(accounts);
         });
     });
 }
+
 export function saveToken(filePath, token) {
     fs.appendFile(filePath, `${token}\n`, (err) => {
         if (err) {
-            logger('Error saving token:', err);
+            logger('保存令牌时出错:', err);
         } else {
-            logger('Token saved successfully.');
+            logger('令牌保存成功。');
         }
     });
 }
+
 export function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
