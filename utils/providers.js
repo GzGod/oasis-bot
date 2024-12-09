@@ -23,10 +23,10 @@ async function connectWithToken(token) {
     try {
         const response = await axios.post(url, payload, { headers });
         const logToken = response.data[0].result.data.json;
-        logger('Creating Providers successful:', logToken);
+        logger('创建供应商成功:', logToken);
         return logToken;
     } catch (error) {
-        logger('Creating Providers error:', error.response ? error.response.status : error.response.statusText, 'error');
+        logger('创建供应商出错:', error.response ? error.response.status : error.response.statusText, 'error');
         return null;
     }
 }
@@ -35,14 +35,14 @@ export async function createProviders(numID) {
     try {
         const tokens = await readToken('tokens.txt');
         for (const token of tokens) { 
-            logger(`Creating Providers using token: ${token}`);
+            logger(`使用令牌创建供应商: ${token}`);
             for (let i = 0; i < numID; i++) {
-                logger(`Creating Providers #${i + 1}....`);
+                logger(`创建第 ${i + 1} 个供应商....`);
                 const logToken = await connectWithToken(token);
                 if (logToken) {
                     saveToken("providers.txt", logToken)
                 } else {
-                    logger('Failed to create provider', 'error', 'error');
+                    logger('创建供应商失败', '', 'error');
                     continue;
                 }
             };
@@ -50,6 +50,6 @@ export async function createProviders(numID) {
         };
         return true;
     } catch (error) {
-        logger("Error reading token or connecting:", error, 'error');
+        logger("读取令牌或连接时出错:", error, 'error');
     };
 };
