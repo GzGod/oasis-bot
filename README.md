@@ -1,4 +1,5 @@
 # OASIS AI BETA CLI 版本
+**不介意的话走我的链接注册吧~https://r.oasis.ai/xuegaozhanshen**
 
 ![banner](image-1.png)
 由分布式计算提供支持的AI推理
