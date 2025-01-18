@@ -4,16 +4,12 @@ import { logger } from "./logger.js";
 import axios from 'axios';
 
 async function connectWithToken(token) {
-    const url = 'https://api.oasis.ai/internal/authConnect?batch=1';
+    const url = 'https://api.oasis.ai/internal/auth/connect';
     const randomId = generateRandomId();
     const payload = {
-        "0": {
-            "json": {
-                "name": randomId,
-                "platform": "headless"
-            }
-        }
-    };
+        "name": randomId,
+        "platform": "headless"
+    }
 
     const headers = {
         'Content-Type': 'application/json',
@@ -22,7 +18,7 @@ async function connectWithToken(token) {
 
     try {
         const response = await axios.post(url, payload, { headers });
-        const logToken = response.data[0].result.data.json;
+        const logToken = response.data.token;
         logger('创建供应商成功:', logToken);
         return logToken;
     } catch (error) {
