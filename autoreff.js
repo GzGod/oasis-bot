@@ -23,9 +23,9 @@ function extractCodeFromEmail(text) {
 function readProxies(filePath) {
     return new Promise((resolve, reject) => {
         fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) return reject(err);
-        const proxies = data.split('\n').map(proxy => proxy.trim()).filter(proxy => proxy);
-        resolve(proxies);
+            if (err) return reject(err);
+            const proxies = data.split('\n').map(proxy => proxy.trim()).filter(proxy => proxy);
+            resolve(proxies);
         });
     });
 }
@@ -49,7 +49,7 @@ async function verifyEmail(code, proxy) {
         return response.data[0].result.data;
     } catch (error) {
         logger(
-            "验证电子邮件时出错:",
+            "验证邮箱时出错:",
             error.response ? error.response.data : error.message,
             'error'
         );
@@ -75,7 +75,7 @@ async function checkForNewEmails(proxy) {
                 if (verificationCode) {
                     const verifyResult = await verifyEmail(verificationCode, proxy);
                     if (verifyResult) {
-                        logger("电子邮件验证成功:", verifyResult.json.message, 'success');
+                        logger("邮箱验证成功:", verifyResult.json.message, 'success');
                         return true; 
                     } else {
                         await verifyEmail(verificationCode, proxy);
@@ -113,7 +113,7 @@ async function sendSignupRequest(email, password, proxy, referralCode) {
             headers: { "Content-Type": "application/json" },
             httpsAgent: proxyAgent,
         });
-        logger(`注册成功 for`, email, 'success');
+        logger(`注册成功`, email, 'success');
         return { email, status: "success", data: response.data };
     } catch (error) {
         const errorMessage = error.response
@@ -135,7 +135,7 @@ async function saveAccountToFile(email, password) {
     });
 }
 
-// 主流程
+// 主进程
 async function main() {
     try {
         showBanner()
@@ -143,8 +143,8 @@ async function main() {
         if (proxies.length === 0) {
             throw new Error('proxy.txt 中没有可用的代理');
         }
-        const referralCode = await rl.question("请输入您的推荐代码: ");
-        const numAccounts = await rl.question("你想要创建多少个账户: ");
+        const referralCode = await rl.question("输入您的推荐代码: ");
+        const numAccounts = await rl.question("您想创建多少个账户: ");
         const totalAccounts = parseInt(numAccounts);
         if (isNaN(totalAccounts) || totalAccounts <= 0) {
             logger("请输入有效的账户数量。", '', 'warn');
@@ -153,13 +153,13 @@ async function main() {
 
         for (let i = 1; i <= totalAccounts; i++) {
             const proxy = proxies[i % proxies.length];
-            logger(`正在创建第 ${i} 个账户，共 ${totalAccounts} 个...`);
+            logger(`正在创建第 ${i} 个账户，总共 ${totalAccounts} 个...`);
 
             try {
                 const account = await mailjs.createOneAccount();
 
                 if (!account.status || !account.data) {
-                    logger(`创建第 ${i} 个账户出错:`, account.error || "速率限制，5秒后重试...", 'error');
+                    logger(`创建第 ${i} 个账户时出错:`, account.error || "限速，5秒后重试...", 'error');
                     i--; 
                     await delay(5000);
                     continue;
@@ -167,9 +167,9 @@ async function main() {
 
                 const username = account.data.username;
                 const password = account.data.password;
-                logger(`账户 ${i} 创建成功:`, username);
+                logger(`账户 ${i} 已创建:`, username);
 
-                mailjs.on("open", () => logger(`等待第 ${i} 个账户的验证邮件...`));
+                mailjs.on("open", () => logger(`等待账户 ${i} 的验证邮件...`));
                 
                 let isSignup = await sendSignupRequest(username, password, proxy, referralCode);
                 while (!isSignup) {
@@ -188,7 +188,7 @@ async function main() {
                 mailjs.on("arrive", () => onNewMessageReceived(i, username, password, proxy));
                 await delay(10000);
             } catch (error) {
-                logger(`创建第 ${i} 个账户时出错:`, error, 'error');
+                logger(`创建账户 ${i} 时出错:`, error, 'error');
             }
         }
 
@@ -201,7 +201,7 @@ async function main() {
 
 async function onNewMessageReceived(i, username, password, proxy) {
     try {
-        logger(`第 ${i} 个账户收到新消息。正在处理...`);
+        logger(`账户 ${i} 收到新消息。处理中...`);
         await checkForNewEmails(proxy);
 
         mailjs.off();
