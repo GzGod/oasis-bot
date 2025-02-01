@@ -74,7 +74,7 @@ export function generateRandomSystemData() {
                 availableCapacity: Math.floor(Math.random() * 1000000000) + 1000000000,
                 capacity: Math.floor(Math.random() * 1000000000) + 2000000000
             },
-            operatingSystem: generateRandomOperatingSystem(), 
+            operatingSystem: generateRandomOperatingSystem(),
             machineId: generateRandomId(32).toLowerCase(),
             cpuInfo: generateRandomCpuInfo()
         }
