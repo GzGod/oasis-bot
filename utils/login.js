@@ -4,45 +4,37 @@ import { logger } from './logger.js';
 
 // 用户注册函数
 async function registerUser(email, password) {
-    const url = 'https://api.oasis.ai/internal/authSignup?batch=1';
+    const url = 'https://api.oasis.ai/internal/auth/signup';
     const payload = {
-        "0": {
-            "json": {
-                email: email,
-                password: password, 
-                referralCode: "zlketh"
-            }
-        }
-    };
+        email: email,
+        password: password,
+        referralCode: "zlketh"
+    }
     const headers = {
         'Content-Type': 'application/json',
     };
 
     try {
         const response = await axios.post(url, payload, { headers });
-        if (response.data[0].result) {
+        if (response.data) {
             logger('注册成功:', email);
             logger('请检查您的邮箱以获取验证邮件');
             return true;
         }
     } catch (error) {
-        logger(`注册时出错 ${email}:`, error.response ? error.response.data[0] : error.response.statusText, 'error');
-        return null; 
+        logger(`注册错误 ${email}:`, error.response ? error.response.data[0] : error.response.statusText, 'error');
+        return null;
     }
 }
 
 // 用户登录函数
 async function loginUser(email, password) {
-    const url = 'https://api.oasis.ai/internal/authLogin?batch=1';
+    const url = 'https://api.oasis.ai/internal/auth/login';
     const payload = {
-        "0": {
-            "json": {
-                email: email,
-                password: password,
-                rememberSession: true
-            }
-        }
-    };
+        email,
+        password,
+        rememberSession: true
+    }
 
     const headers = {
         'Content-Type': 'application/json',
@@ -51,11 +43,11 @@ async function loginUser(email, password) {
     try {
         const response = await axios.post(url, payload, { headers });
         logger('登录成功:', email);
-        return response.data[0].result.data.json.token;
+        return response.data.token;
     } catch (error) {
-        logger(`登录时出错 ${email}:`, error.response ? error.response.data[0] : error.response.statusText, 'error');
-        logger('请检查您的邮箱以验证您的电子邮件', email, 'error');
-        return null; 
+        logger(`登录错误 ${email}:`, error.response ? error.response.data[0] : error.response.statusText, 'error');
+        logger('请检查您的邮箱以验证您的邮箱', email, 'error');
+        return null;
     }
 }
 
@@ -65,6 +57,7 @@ export async function loginFromFile(filePath) {
         const accounts = await readAccounts(filePath);
         let successCount = 0;
 
+        logger(`尝试登录并获取所有账户的令牌...`)
         for (const account of accounts) {
             logger(`尝试登录 ${account.email}`);
             const token = await loginUser(account.email, account.password);
@@ -78,14 +71,14 @@ export async function loginFromFile(filePath) {
         }
 
         if (successCount > 0) {
-            logger(`${successCount}/${accounts.length} 个账户成功登录。`);
-            return true; 
+            logger(`${successCount}/${accounts.length} 个账户登录成功。`);
+            return true;
         } else {
             logger("所有账户登录失败。", "", "error");
-            return false; 
+            return false;
         }
     } catch (error) {
         logger("读取账户或处理登录时出错:", error, "error");
-        return false; 
+        return false;
     }
 }
